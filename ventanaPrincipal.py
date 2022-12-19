@@ -161,7 +161,7 @@ botonGuardar = tk.Button(
     # height = 2, 
     # width = 15
     # font=("Courier", 16)
-    # command=agregarWidget
+    command=funciones.guardarNotas
 )
 
 botonGuardar.grid(
@@ -240,6 +240,6 @@ variables.listaWidgetsInicial.append(salidaPromedio)
 
 salidaPromedio.tag_configure("center", justify='center')
 salidaPromedio.tag_add("center", "0.0", "end")
-funciones.actualizarSalida("Añadir Notas")
+funciones.actualizarSalida("Añadir Nota(s)")
 
 ventanaPrincipal.mainloop()

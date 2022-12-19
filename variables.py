@@ -7,3 +7,4 @@ listaWidgetsNuevos = []
 listaWidgetsInicial = []
 listaNotas = []
 listaPorcentajes = []
+datos = None

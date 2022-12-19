@@ -1,10 +1,32 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import variables
+import pandas as pd
 
 ## Funciones
+def guardarNotas():
+    if variables.contadorWidgets == 0 or variables.datos is None: return
+    
+    df_notas = pd.DataFrame(columns=["N° Nota", "Nota", "Porcentaje(%)"], index=range(variables.contadorWidgets + 1))
+    
+    for indice in range(0, variables.contadorWidgets):
+        
+        datos = [indice + 1, variables.datos[0][indice], variables.datos[1][indice] * 100]
+        
+        df_notas.iloc[indice] = datos
+        
+    datos = ["Promedio", variables.datos[2], None]
+    df_notas.iloc[variables.contadorWidgets] = datos
+    
+    print(df_notas)
+    df_notas.to_excel("notas.xlsx", index=False)
+        
+        
+
 def calcularNota():
     if variables.contadorWidgets == 0: return
+    
+    variables.datos = []
 
     notas = []
     porcentajes = []
@@ -15,20 +37,22 @@ def calcularNota():
             porcentajes.append(int(porcentaje.get()) / 100)
             sumaPorcentaje += porcentajes[-1]
         except:
+            print("Problema 1")
             actualizarSalida("Informacion Incorrecta")
             return
 
     for nota in variables.listaNotas:
         try:
             notas.append(float(nota.get()))
-
-            if notas[-1] < 1 or notas[-1] > 7:
-                actualizarSalida("Notas Incorrectas")
-                return 
-
         except:
+            print("Problema 2")
             actualizarSalida("Informacion Incorrecta")
             return
+        
+        for indice in range(0, len(notas)):
+            if notas[indice] < 1 or notas[indice] > 7:
+                actualizarSalida("Notas Incorrectas")
+                return 
     
     promedio = 0
 
@@ -42,6 +66,10 @@ def calcularNota():
         salida = f"{promedio:.2f}"
 
         actualizarSalida(salida)
+        
+    variables.datos.append(notas)
+    variables.datos.append(porcentajes)
+    variables.datos.append(promedio)
 
 def widgetNuevo(contadorWidgets):
     
@@ -161,6 +189,7 @@ def eliminarWidget():
 
     variables.listaWidgetsNuevos.pop()
     variables.listaNotas.pop()
+    variables.listaPorcentajes.pop()
 
 def actualizarSalida(texto):
     variables.listaWidgetsInicial[-1].configure(state=tk.NORMAL)
@@ -181,7 +210,7 @@ def reiniciar():
     for indice in range(0, len(variables.listaWidgetsNuevos)):
         eliminarWidget()
     
-    actualizarSalida("Añadir Notas")
+    actualizarSalida("Añadir Nota(s)")
 
 def limpiarTextoNota():
     for index in range(0, len(variables.listaWidgetsNuevos)):
